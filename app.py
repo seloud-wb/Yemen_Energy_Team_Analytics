@@ -7,9 +7,11 @@ from streamlit_navigation_bar import st_navbar
 
 import pages as pg
 
- # ------------------------------------------------------------
- # Main Page
- # ------------------------------------------------------------
+# ------------------------------------------------------------
+# Main Page Configuration
+# ------------------------------------------------------------
+# IMPORTANT: st.set_page_config() MUST be the first Streamlit command.
+# This ensures proper session initialization, especially on Streamlit Cloud.
 # Note: Streamlit automatically loads .streamlit/config.toml from the project root.
 # No manual loading is required - the theme settings will be applied automatically.
 
@@ -187,7 +189,9 @@ if not st.session_state.authenticated:
     
     st.stop()  # Stop execution here if not authenticated
 
-pages = ["Home", "YEEAP II Monitoring", "Geospatial Data Explorer", "Need & Opportunity Demo"]
+# ------------------------------------------------------------
+# Navigation Configuration
+# ------------------------------------------------------------
 pages = ["Home", "YEEAP II Monitoring Dashboard", "RESET Geospatial Data Explorer"]
 # Get absolute path to World Bank logo
 logo_path = os.path.join(os.path.dirname(__file__), "assets", "wb_logo.svg")

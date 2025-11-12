@@ -16,7 +16,6 @@ streamlit run app.py
 
 - `app.py` – main entry point.
 - `pages/` – additional Streamlit multipage views.
-- `src/` – shared helper code (empty for now, ready for future logic).
+- `src/` – shared helper code .
 
-Feel free to expand each section as we refine requirements.
 

@@ -327,7 +327,13 @@ def render_site_selector_v2() -> None:
     """Render a three-column prototype for the site selector v2 dashboard."""
     
     # Get cached data (this function caches the entire data preparation)
-    datasets_json, features_json, grid_datasets_json, grid_values_json, grid_geometry_json = _prepare_site_selector_data()
+    # Wrap in try-except to handle initialization errors gracefully
+    try:
+        datasets_json, features_json, grid_datasets_json, grid_values_json, grid_geometry_json = _prepare_site_selector_data()
+    except Exception as e:
+        st.error(f"Error loading geospatial data: {str(e)}")
+        st.info("Please refresh the page. If the problem persists, the data files may be missing or corrupted.")
+        return
 
     template = """
 <!DOCTYPE html>
@@ -1805,23 +1811,18 @@ def render_site_selector_v2() -> None:
 </html>
     """
 
-    # Cache the final HTML to prevent rerenders
-    cache_key_html = "site_selector_final_html"
-    
     # Build final HTML with data replacements
+    # Data is already cached via @st.cache_data, so this is fast
     final_html = template.replace("__SITE_DATASETS__", datasets_json) \
                          .replace("__SITE_FEATURES__", features_json) \
                          .replace("__GRID_DATASETS__", grid_datasets_json) \
                          .replace("__GRID_VALUES__", grid_values_json) \
                          .replace("__GRID_GEOMETRY__", grid_geometry_json)
     
-    # Only rerender if HTML content changed
-    if cache_key_html not in st.session_state or st.session_state[cache_key_html] != final_html:
-        st.session_state[cache_key_html] = final_html
-    
-    # Render the HTML component
+    # Render the HTML component directly
+    # The iframe will reload on each Streamlit rerun, but data loading is cached
     html(
-        st.session_state[cache_key_html],
+        final_html,
         height=920,
         scrolling=False,
     )
