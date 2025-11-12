@@ -1,0 +1,14 @@
+{
+"type": "FeatureCollection",
+"name": "pilot_minigrid",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "name": "Al-Had District", "Ownership": "Public Electricity Corporation (PEC)", "Estimated  Population": "96376", "Location": "Lahj Governorate, Al-Had District ", "Latitude": 13.963, "Longitude": 45.291 }, "geometry": { "type": "Point", "coordinates": [ 45.291, 13.963 ] } },
+{ "type": "Feature", "properties": { "name": "Mayfa'a Demostic project", "Ownership": "Community, PEC subsidy (Diesel & maintenance Grants)", "Estimated  Population": "25000", "Location": "Hadhramaut Governorate, Brom Mayfa'a District", "Latitude": 14.113, "Longitude": 48.707 }, "geometry": { "type": "Point", "coordinates": [ 48.707, 14.113 ] } },
+{ "type": "Feature", "properties": { "name": "Ghaydat Al-Bahish", "Ownership": "Community ", "Estimated  Population": "5000", "Location": "Hadhramaut Governorate, Brom Mayfa'a District", "Latitude": 14.221, "Longitude": 48.806 }, "geometry": { "type": "Point", "coordinates": [ 48.806, 14.221 ] } },
+{ "type": "Feature", "properties": { "name": "Huswain project", "Ownership": "Public Electricity Corporation (PEC)", "Estimated  Population": "12500", "Location": "Al Mahrah Governorate, Huswain District", "Latitude": 15.601, "Longitude": 52.098 }, "geometry": { "type": "Point", "coordinates": [ 52.098, 15.601 ] } },
+{ "type": "Feature", "properties": { "name": "Tur Al Bahah (Al-Farsha)", "Ownership": "Previously Community Committee (now defunct)", "Estimated  Population": "8500", "Location": "Lahj Governorate, Tur Al Bahah District ", "Latitude": 13.138, "Longitude": 44.416 }, "geometry": { "type": "Point", "coordinates": [ 44.416, 13.138 ] } },
+{ "type": "Feature", "properties": { "name": "Shoqra city ", "Ownership": "Public Electricity Corporation (PEC)", "Estimated  Population": "~30,000 ", "Location": "Abyan Governorate, Khanfir District ", "Latitude": 13.36, "Longitude": 45.705 }, "geometry": { "type": "Point", "coordinates": [ 45.705, 13.36 ] } },
+{ "type": "Feature", "properties": { "name": "Thamud City project", "Ownership": "Local Authority of the District", "Estimated  Population": "6800", "Location": "Hadhramaut Governorate, Thamud District", "Latitude": 17.289, "Longitude": 49.916 }, "geometry": { "type": "Point", "coordinates": [ 49.916, 17.289 ] } }
+]
+}

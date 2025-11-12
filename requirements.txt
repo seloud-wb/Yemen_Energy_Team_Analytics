@@ -1,0 +1,10 @@
+# Core Streamlit
+streamlit==1.35.0
+
+# Navigation
+streamlit-navigation-bar>=3.3.0
+
+# Data processing
+pandas>=2.2.3
+
+# Note: folium and streamlit-folium removed as they are not used in the codebase
