@@ -303,47 +303,31 @@ def _load_grid_datasets() -> tuple[Dict[str, Any], Dict[str, Dict[str, Dict[str,
     return {"feature_sets": feature_sets_meta}, feature_values, geometry
 
 @st.cache_data(ttl=3600)
+def _prepare_site_selector_data() -> tuple[str, str, str, str, str]:
+    """Prepare and cache all data needed for the site selector component."""
+    # Load data (cached functions, so fast after first load)
+    datasets_json = json.dumps({k: {**v, "path": str(v["path"])} for k, v in SITE_DATASETS.items()})
+    
+    # Load features for all datasets
+    features_dict = {}
+    for dataset_id in SITE_DATASETS:
+        features_dict[dataset_id] = _load_dataset_features(dataset_id)
+    features_json = json.dumps(features_dict)
+    
+    # Load grid data
+    grid_meta, grid_values, grid_geometry = _load_grid_datasets()
+    grid_datasets_json = json.dumps(grid_meta)
+    grid_values_json = json.dumps(grid_values)
+    grid_geometry_json = json.dumps(grid_geometry)
+    
+    return datasets_json, features_json, grid_datasets_json, grid_values_json, grid_geometry_json
+
+
 def render_site_selector_v2() -> None:
     """Render a three-column prototype for the site selector v2 dashboard."""
     
-    # Use session state to cache JSON strings to avoid re-serialization
-    cache_key_data = "site_selector_data_cache"
-    cache_key_grid = "site_selector_grid_cache"
-    
-    # Check if we have cached JSON strings
-    if cache_key_data not in st.session_state or cache_key_grid not in st.session_state:
-        # Load data (cached functions, so fast after first load)
-        datasets_json = json.dumps({k: {**v, "path": str(v["path"])} for k, v in SITE_DATASETS.items()})
-        
-        # Load features for all datasets
-        features_dict = {}
-        for dataset_id in SITE_DATASETS:
-            features_dict[dataset_id] = _load_dataset_features(dataset_id)
-        features_json = json.dumps(features_dict)
-        
-        # Load grid data
-        grid_meta, grid_values, grid_geometry = _load_grid_datasets()
-        grid_datasets_json = json.dumps(grid_meta)
-        grid_values_json = json.dumps(grid_values)
-        grid_geometry_json = json.dumps(grid_geometry)
-        
-        # Cache the JSON strings in session state
-        st.session_state[cache_key_data] = {
-            "datasets_json": datasets_json,
-            "features_json": features_json,
-        }
-        st.session_state[cache_key_grid] = {
-            "grid_datasets_json": grid_datasets_json,
-            "grid_values_json": grid_values_json,
-            "grid_geometry_json": grid_geometry_json,
-        }
-    else:
-        # Use cached JSON strings
-        datasets_json = st.session_state[cache_key_data]["datasets_json"]
-        features_json = st.session_state[cache_key_data]["features_json"]
-        grid_datasets_json = st.session_state[cache_key_grid]["grid_datasets_json"]
-        grid_values_json = st.session_state[cache_key_grid]["grid_values_json"]
-        grid_geometry_json = st.session_state[cache_key_grid]["grid_geometry_json"]
+    # Get cached data (this function caches the entire data preparation)
+    datasets_json, features_json, grid_datasets_json, grid_values_json, grid_geometry_json = _prepare_site_selector_data()
 
     template = """
 <!DOCTYPE html>
@@ -1821,13 +1805,23 @@ def render_site_selector_v2() -> None:
 </html>
     """
 
+    # Cache the final HTML to prevent rerenders
+    cache_key_html = "site_selector_final_html"
+    
+    # Build final HTML with data replacements
+    final_html = template.replace("__SITE_DATASETS__", datasets_json) \
+                         .replace("__SITE_FEATURES__", features_json) \
+                         .replace("__GRID_DATASETS__", grid_datasets_json) \
+                         .replace("__GRID_VALUES__", grid_values_json) \
+                         .replace("__GRID_GEOMETRY__", grid_geometry_json)
+    
+    # Only rerender if HTML content changed
+    if cache_key_html not in st.session_state or st.session_state[cache_key_html] != final_html:
+        st.session_state[cache_key_html] = final_html
+    
+    # Render the HTML component
     html(
-        template
-        .replace("__SITE_DATASETS__", datasets_json)
-        .replace("__SITE_FEATURES__", features_json)
-        .replace("__GRID_DATASETS__", grid_datasets_json)
-        .replace("__GRID_VALUES__", grid_values_json)
-        .replace("__GRID_GEOMETRY__", grid_geometry_json),
+        st.session_state[cache_key_html],
         height=920,
         scrolling=False,
     )
