@@ -305,13 +305,45 @@ def _load_grid_datasets() -> tuple[Dict[str, Any], Dict[str, Dict[str, Dict[str,
 
 def render_site_selector_v2() -> None:
     """Render a three-column prototype for the site selector v2 dashboard."""
-
-    datasets_json = json.dumps({k: {**v, "path": str(v["path"])} for k, v in SITE_DATASETS.items()})
-    features_json = json.dumps({dataset_id: _load_dataset_features(dataset_id) for dataset_id in SITE_DATASETS})
-    grid_meta, grid_values, grid_geometry = _load_grid_datasets()
-    grid_datasets_json = json.dumps(grid_meta)
-    grid_values_json = json.dumps(grid_values)
-    grid_geometry_json = json.dumps(grid_geometry)
+    
+    # Use session state to cache JSON strings to avoid re-serialization
+    cache_key_data = "site_selector_data_cache"
+    cache_key_grid = "site_selector_grid_cache"
+    
+    # Check if we have cached JSON strings
+    if cache_key_data not in st.session_state or cache_key_grid not in st.session_state:
+        # Load data (cached functions, so fast after first load)
+        datasets_json = json.dumps({k: {**v, "path": str(v["path"])} for k, v in SITE_DATASETS.items()})
+        
+        # Load features for all datasets
+        features_dict = {}
+        for dataset_id in SITE_DATASETS:
+            features_dict[dataset_id] = _load_dataset_features(dataset_id)
+        features_json = json.dumps(features_dict)
+        
+        # Load grid data
+        grid_meta, grid_values, grid_geometry = _load_grid_datasets()
+        grid_datasets_json = json.dumps(grid_meta)
+        grid_values_json = json.dumps(grid_values)
+        grid_geometry_json = json.dumps(grid_geometry)
+        
+        # Cache the JSON strings in session state
+        st.session_state[cache_key_data] = {
+            "datasets_json": datasets_json,
+            "features_json": features_json,
+        }
+        st.session_state[cache_key_grid] = {
+            "grid_datasets_json": grid_datasets_json,
+            "grid_values_json": grid_values_json,
+            "grid_geometry_json": grid_geometry_json,
+        }
+    else:
+        # Use cached JSON strings
+        datasets_json = st.session_state[cache_key_data]["datasets_json"]
+        features_json = st.session_state[cache_key_data]["features_json"]
+        grid_datasets_json = st.session_state[cache_key_grid]["grid_datasets_json"]
+        grid_values_json = st.session_state[cache_key_grid]["grid_values_json"]
+        grid_geometry_json = st.session_state[cache_key_grid]["grid_geometry_json"]
 
     template = """
 <!DOCTYPE html>
