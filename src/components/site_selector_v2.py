@@ -302,7 +302,7 @@ def _load_grid_datasets() -> tuple[Dict[str, Any], Dict[str, Dict[str, Dict[str,
 
     return {"feature_sets": feature_sets_meta}, feature_values, geometry
 
-
+@st.cache_data(ttl=3600)
 def render_site_selector_v2() -> None:
     """Render a three-column prototype for the site selector v2 dashboard."""
     
