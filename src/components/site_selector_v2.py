@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any, Dict
 
 import pandas as pd
+import streamlit as st
 
 from streamlit.components.v1 import html
 
@@ -194,7 +195,9 @@ GRID_FEATURE_CONFIG: Dict[str, Dict[str, Any]] = {
 }
 
 
+@st.cache_data(ttl=3600)  # Cache for 1 hour
 def _load_dataset_features(dataset_id: str) -> list[dict[str, Any]]:
+    """Load and cache dataset features from GeoJSON files."""
     config = SITE_DATASETS[dataset_id]
     path = config["path"]
     if not path.exists():
@@ -233,7 +236,9 @@ def _humanize_column(name: str) -> str:
     return label.title()
 
 
+@st.cache_data(ttl=3600)  # Cache for 1 hour
 def _load_grid_datasets() -> tuple[Dict[str, Any], Dict[str, Dict[str, Dict[str, float]]], Dict[str, Any]]:
+    """Load and cache grid datasets (geometry, metadata, and values)."""
     base_path = Path("data/boundaries_h3/h3_grid_res5.geojson")
     with base_path.open("r", encoding="utf-8") as file:
         geometry = json.load(file)
