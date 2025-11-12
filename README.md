@@ -1,6 +1,6 @@
 # Yemen Energy Analytics Portal
 
-Streamlit prototype for the Yemen Energy Team. This repo currently contains a minimal scaffold so we can iterate on individual pages without extra styling.
+Under development
 
 ## Quickstart
 
